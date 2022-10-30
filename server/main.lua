@@ -1,7 +1,7 @@
 local ox_inv <const>, cfg <const> = exports.ox_inventory, Config
 
 local function SendToWebhook(player, reason, types, style, title)
-    if cfg.Webhook.active then
+    if cfg.Webhook.active or #cfg.Webhook.url > 10 then
         if types == 'message' then
             supv.webhook.message(cfg.Webhook.url, reason, style.bot_name)
         elseif types == 'embed' then
@@ -63,14 +63,15 @@ ESX.RegisterServerCallback('supv_shops:buy', function(source, cb, money, basket,
         -- on retire le total de l'argent sur le compte selectionné
         player.removeAccountMoney(money, total)
 
-        local str = ''
-        local long = ''
+        local str, long = '', ''
         for _,v in pairs(basket) do
-            str = ("%s : %s"):format(v.label, v.count)
+            str = ("__%s :__ *x%s*"):format(v.label, v.count)
             long = long..'\n'..str
         end
 
-        SendToWebhook(player, ("*Le joueur __**%s**__ a acheté avec succès, __récap de son achat:__*\n%s\ntotal = %s$ en %s"):format(player.getName(), long, total, money == 'bank' and 'banque' or money == 'money' and 'cash' or money == 'black_money' and 'argent sale'), 'embed', cfg.Webhook.style, 'Achat avec succès')
+        long = long..'\n'
+
+        SendToWebhook(player, ("*Le joueur __**%s**__ a acheté avec succès, __récap de son achat:__*\n%s\n__Total :__ *%s$* en *%s*"):format(player.getName(), long, total, money == 'bank' and 'banque' or money == 'money' and 'cash' or money == 'black_money' and 'argent sale'), 'embed', cfg.Webhook.style, 'Achat avec succès')
 
         -- on peut enfin renvoyer true au client pour validez son achat et fermez le menu etc
         cb(true)
@@ -82,4 +83,4 @@ local message <const> = {
     error = "^1Impossible de vérifier la version du script"
 }
 
-supv.version.check("https://raw.githubusercontent.com/SUP2Ak/supv_shops/main/fxmanifest.lua", message.needUpate, message.error, 'lua')
+supv.version.check("https://raw.githubusercontent.com/SUP2Ak/supv_shops/main/fxmanifest.lua", message.needUpate, message.error, 'lua', 'https://github.com/SUP2Ak/supv_shops')
