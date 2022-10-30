@@ -4,6 +4,7 @@ lua54 'yes'
 
 author 'SUP2Ak'
 version '1.0'
+link 'https://github.com/SUP2Ak/supv_shops'
 description 'supv_shops (example to use module from supv_core)'
 
 shared_scripts { 
